@@ -2,11 +2,21 @@
 <html>
 	<head>
 		<title>Wattpad Downloader</title>
-		<script>
 		
-		</script>
 	</head>
 	<body>
-	
+		<button id="btn">Click Me!!</button>
+		<button id="clr">Clear</button>
+		<div class="results"></div>
 	</body>
+	
+	<script src="js/zepto.min.js"></script>
+	<script>
+		$('#btn').click(function(){
+			$('.results').prepend(Date() + "<br>");
+		});
+		$('#clr').click(function(){
+			$('.results').html("");
+		});
+	</script>
 </html>
