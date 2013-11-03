@@ -26,23 +26,26 @@ Object.size = function(obj) {
 			$('.debug').fadeOut();
 			write("<i></i>Getting Chapter List...");
 			$.get( "http://w2a.us.to/wat/getchapters.php", { wattcode: wattcode } )
-			  .done(function( data ) {
+			  .done(function( data ,status) {
 				chaptersJSON = data;
-				
-				if(data =="The wattcode is not valid or the page is no longer available.") {
-					write("The wattcode is not valid or the page is no longer available.");
-						$('.debug').fadeIn();
-					return false;
+				if(status=="success"){
+					if(data =="The wattcode is not valid or the page is no longer available.") {
+						write("The wattcode is not valid or the page is no longer available.");
+							$('.debug').fadeIn();
+						return false;
+					}
+					write( "Response:" + data + "");
+					var chapters = $.parseJSON(data);
+					var indv_incr = ((1/Object.size(chapters))*100)
+					$.each(chapters, function( index, value ) {
+						
+						 downloadChapter(index,value);
+						
+					});
+				} else {
+					alert("Error Fetching Chapters" +status);
 				}
-				write( "Response:" + data + "");
-				var chapters = $.parseJSON(data);
-				var indv_incr = ((1/Object.size(chapters))*100)
-				$.each(chapters, function( index, value ) {
-					
-					 downloadChapter(index,value);
-					
-				});
-			  });
+				  });
 			} catch(Ex){
 				write("<b>" +Ex +"</b>");
 			}
@@ -69,12 +72,19 @@ Object.size = function(obj) {
 						
 									$.post( "http://w2a.us.to/wat/getpackage.php", { wattcode: wattcode,chapters: chaptersJSON,accesscode: accesscode } )
 										 .done(function( data ) {
-											 $('iframe').attr("src",data);
-											 write("<i class='check'></i> Done Download!!...");
-											 $('.debug').fadeIn();
+											
+										 var xd = data.match(/([a-f0-9]{32})([0-9]+)_FULLPACKAGED/);
+										var bookid = (xd[2]);
+											$.get("http://w2a.us.to/wat/jasper/builds/FULL_STORY_"+bookid+".txt")
+											.done(function(data,status){
+												if(status =="success"){
+													writeFile(data,"FULL_STORY_" + bookid + ".txt");
+												}
+											});
 										 });
 										 
-										
+									//FULL_STORY_3710071.txt
+									
 								
 						
 						updateDownloadCounter(cur_downloads,error_downloads.length);

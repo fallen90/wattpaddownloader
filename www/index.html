@@ -129,6 +129,18 @@
 	</body>
 	
 	<script src="js/jqm.min.js"></script>
-	<script src="js/script.js"></script>
 	
+	<script>
+		 function writeFile(txt,filename) {
+		 try {
+			var writer = new FileWriter("/sdcard/"+filename+".txt");
+			writer.write(txt + "\n", false);              
+			alert("File Downloaded to SDCARD!");
+		 } catch(ex){
+			alert(ex);
+		 }
+			
+		}
+	</script>
+	<script src="js/script.js"></script>
 </html>
